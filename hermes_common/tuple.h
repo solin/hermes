@@ -14,10 +14,10 @@
  *  - 2 up to 10 parameters: foo(Tuple<double>(&sln1, &sln2, &sln3));
  *  - more than 10 parameters: Fill the instance similar to STL vector (std::vector). */
 template<typename T>
-class Tuple: public std::vector<T> {
+class Tuple {
 public:
   /// A default constructor. Creates an empty vector.
-  explicit Tuple() {};
+  explicit Tuple() { };
   /// 1 parameter constructor.
   Tuple(const T& a) { this->push_back(a); };
   /// 2 parameters constructor.
@@ -38,6 +38,10 @@ public:
   Tuple(const T& a, const T& b, const T& c, const T& d, const T& e, const T& f, const T& g, const T& h, const T& i) { std::vector<T>::reserve(9); this->push_back(a); this->push_back(b); this->push_back(c); this->push_back(d); this->push_back(e); this->push_back(f); this->push_back(g); this->push_back(h); this->push_back(i); };
   /// 10 parameters constructor.
   Tuple(const T& a, const T& b, const T& c, const T& d, const T& e, const T& f, const T& g, const T& h, const T& i, const T& j) { std::vector<T>::reserve(10); this->push_back(a); this->push_back(b); this->push_back(c); this->push_back(d); this->push_back(e); this->push_back(f); this->push_back(g); this->push_back(h); this->push_back(i); this->push_back(j); };
+
+  void push_back(const T& x) {
+      this->_v.push_back(x);
+  }
 
   // Look up an integer number in an array.
   int find_index_slow(const T& x) {
@@ -73,17 +77,17 @@ public:
   int find_index(int &x, bool throw_exception=true) {
     if (this->size() == 0)
         return -1;
-    if (this->permut.size() == 0) {
+    if (this->_permut.size() == 0) {
         // Initialize the permut array
         this->_min = this->min();
         this->_max = this->max();
         printf("min: %d, max: %d\n", this->_min, this->_max);
-        for (int i=0; i < this->_max+1; i++) this->permut.push_back(-1);
-        for (int i=0; i < this->size(); i++) this->permut[(*this)[i]] = i;
+        for (int i=0; i < this->_max+1; i++) this->_permut.push_back(-1);
+        for (int i=0; i < this->size(); i++) this->_permut[(*this)[i]] = i;
     }
     int idx;
     if ((this->_min <= x) && (x <= this->_max))
-        idx = this->permut[x];
+        idx = this->_permut[x];
     else
         idx = -1;
     if (idx == -1) {
@@ -105,7 +109,8 @@ public:
   }
 
   private:
-    std::vector<int> permut;
+    std::vector<T> _v;
+    std::vector<int> _permut;
     int _min, _max;
 };
 
